@@ -30,10 +30,10 @@ public class SafeJar {
             // Chatbot loop
             while (true) {
                 // Shows a list of available commands
-                System.out.println("Available commands:");
-                System.out.println("1. Create a directory");
-                System.out.println("2. List files in a directory");
-                System.out.println("3. Execute a custom command");
+                System.out.println("Bem vindo ao SafeJar ChatBot");
+                System.out.println("1. sudo me faça um sanduiche");
+                System.out.println("2. Dicionário de Comandos");
+                System.out.println("3. Execute um Comando no terminal Linux");
                 System.out.println("4. Exit chatbot");
 
                 // Gets the user's choice of command
@@ -45,10 +45,46 @@ public class SafeJar {
                 // Executes the chosen command
                 if (choice.equals("1")) {
                     // Creates a directory called "test" on the remote server
-                    command = "mkdir test";
+                    System.out.println("Desculpe querido, receio não poder fazer isso");
                 } else if (choice.equals("2")) {
                     // Lists the files in the current directory on the remote server
-                    command = "ls";
+                    
+                    
+                    System.out.println("pwd\t\tExibe o diretório atual");
+                    System.out.println("ls\t\tLista os arquivos e diretórios no diretório atual");
+                    System.out.println("cd\t\tMuda o diretório atual");
+                    System.out.println("mkdir\t\tCria um diretório");
+                    System.out.println("rmdir\t\tRemove um diretório");
+                    System.out.println("cp\t\tCopia um arquivo ou diretório");
+                    System.out.println("mv\t\tMove ou renomeia um arquivo ou diretório");
+                    System.out.println("rm\t\tRemove um arquivo ou diretório");
+                    System.out.println("grep\t\tPesquisa um padrão em um arquivo ou saída de comando");
+                    System.out.println("sed\t\tEdita um arquivo ou saída de comando usando expressões regulares");
+                    System.out.println("awk\t\tProcessa e filtra dados em um arquivo ou saída de comando");
+                    System.out.println("sort\t\tClassifica as linhas de um arquivo ou saída de comando");
+                    System.out.println("uniq\t\tRemove linhas duplicadas em um arquivo ou saída de comando");
+                    System.out.println("tar\t\tCompacta ou extrai arquivos em um arquivo tar");
+                    System.out.println("zip\t\tCompacta ou extrai arquivos em um arquivo zip");
+                    System.out.println("ssh\t\tConecta-se a outro servidor usando o protocolo SSH (Secure Shell)");
+                    System.out.println("ping\t\tVerifica a conexão de rede com outro host");
+                    System.out.println("traceroute\tRastreia a rota de pacotes através da rede");
+                    System.out.println("ps\t\tExibe informações sobre os processos em execução no sistema.");
+                    System.out.println("top\t\tExibe informações sobre o uso de CPU e memória do sistema em tempo real.");
+                    System.out.println("netstat\t\tExibe informações sobre as conexões de rede ativas no sistema.");
+                    System.out.println("ssh\t\tConecta-se a outro servidor usando o protocolo SSH (Secure Shell).");
+                    System.out.println("scp\t\tCopia arquivos entre servidores usando o protocolo SSH (Secure Copy).");
+                    System.out.println("df\t\tExibe informações sobre o espaço em disco usado e livre em todas as partições do sistema.");
+                    System.out.println("du\t\tExibe informações sobre o uso de espaço em disco de arquivos e diretórios especificados.");
+                    System.out.println("iostat\t\tExibe informações sobre a utilização de recursos de E/S.");
+                    System.out.println("vmstat\t\tExibe informações sobre o uso de memória virtual.");
+                    System.out.println("mpstat\t\tMonitora o uso da CPU em tempo real.");
+                    System.out.println("free\t\tExibe informações sobre a utilização da memória.");
+                    System.out.println("chmod\t\tAltera as permissões de um arquivo ou diretório.");
+                    System.out.println("systemctl status\tVerifica o status de um serviço.");
+                    System.out.println("uname\t\tExibe informações detalhadas sobre o sistema.");
+                    System.out.println("swapon\t\tExibe informações sobre o uso de swap.");
+
+                    
                 } else if (choice.equals("3")) {
                     // Gets a custom command from the user and executes it
                     System.out.print("Enter the command: ");
