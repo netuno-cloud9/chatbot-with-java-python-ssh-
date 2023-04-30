@@ -1,0 +1,82 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package occult.safejar;
+
+/**
+ *
+ * @author ariel
+ */
+import com.jcraft.jsch.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class SafeJar {
+
+    public static void main(String[] args) {
+
+        String user = "xxxxx";
+        String password = "xxxxx";
+        String host = "xxxxx";
+        int port = xxxxx;
+
+        try {
+
+            JSch jsch = new JSch();
+            Session session = jsch.getSession(user, host, port);
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            System.out.println("Conectado a " + host);
+
+            // Mostra uma lista de comandos disponíveis
+            System.out.println("Comandos disponíveis:");
+            System.out.println("1. Criar um diretório");
+            System.out.println("2. Listar arquivos em um diretório");
+            System.out.println("3. Executar um comando personalizado");
+
+            // Obtém a escolha do usuário de comando
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Digite o número do comando: ");
+            String choice = reader.readLine();
+            String command = "";
+
+            // Executa o comando escolhido
+            if (choice.equals("1")) {
+                // Cria um diretório chamado "test" no servidor remoto
+                command = "mkdir test";
+            } else if (choice.equals("2")) {
+                // Lista os arquivos no diretório atual no servidor remoto
+                command = "ls";
+            } else if (choice.equals("3")) {
+                // Obtém um comando personalizado do usuário e o executa
+                System.out.print("Digite o comando: ");
+                command = reader.readLine();
+            } else {
+                System.out.println("Escolha inválida. Saindo.");
+                System.exit(0);
+            }
+
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.connect();
+
+            // Imprime a saída do comando
+            BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+            in.close();
+
+            channel.disconnect();
+            session.disconnect();
+            System.out.println("Desconectado de " + host);
+
+        } catch (JSchException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
