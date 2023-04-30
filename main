@@ -1,26 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package occult.safejar;
 
-/**
- *
- * @author ariel
- */
 import com.jcraft.jsch.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class SafeJar {
 
     public static void main(String[] args) {
-
-        String user = "xxxxx";
-        String password = "xxxxx";
-        String host = "xxxxx";
-        int port = xxxxx;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the username: ");
+        String user = scanner.nextLine();
+        System.out.print("Enter the password: ");
+        String password = scanner.nextLine();
+        System.out.print("Enter the host IP address: ");
+        String host = scanner.nextLine();
+        int port = 22;
 
         try {
 
@@ -29,51 +25,59 @@ public class SafeJar {
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
-            System.out.println("Conectado a " + host);
+            System.out.println("Connected to " + host);
 
-            // Mostra uma lista de comandos disponíveis
-            System.out.println("Comandos disponíveis:");
-            System.out.println("1. Criar um diretório");
-            System.out.println("2. Listar arquivos em um diretório");
-            System.out.println("3. Executar um comando personalizado");
+            // Chatbot loop
+            while (true) {
+                // Shows a list of available commands
+                System.out.println("Available commands:");
+                System.out.println("1. Create a directory");
+                System.out.println("2. List files in a directory");
+                System.out.println("3. Execute a custom command");
+                System.out.println("4. Exit chatbot");
 
-            // Obtém a escolha do usuário de comando
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("Digite o número do comando: ");
-            String choice = reader.readLine();
-            String command = "";
+                // Gets the user's choice of command
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                System.out.print("Enter the command number: ");
+                String choice = reader.readLine();
+                String command = "";
 
-            // Executa o comando escolhido
-            if (choice.equals("1")) {
-                // Cria um diretório chamado "test" no servidor remoto
-                command = "mkdir test";
-            } else if (choice.equals("2")) {
-                // Lista os arquivos no diretório atual no servidor remoto
-                command = "ls";
-            } else if (choice.equals("3")) {
-                // Obtém um comando personalizado do usuário e o executa
-                System.out.print("Digite o comando: ");
-                command = reader.readLine();
-            } else {
-                System.out.println("Escolha inválida. Saindo.");
-                System.exit(0);
+                // Executes the chosen command
+                if (choice.equals("1")) {
+                    // Creates a directory called "test" on the remote server
+                    command = "mkdir test";
+                } else if (choice.equals("2")) {
+                    // Lists the files in the current directory on the remote server
+                    command = "ls";
+                } else if (choice.equals("3")) {
+                    // Gets a custom command from the user and executes it
+                    System.out.print("Enter the command: ");
+                    command = reader.readLine();
+                } else if (choice.equals("4")) {
+                    System.out.println("Exiting chatbot. Goodbye!");
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please try again.");
+                    continue;
+                }
+
+                ChannelExec channel = (ChannelExec) session.openChannel("exec");
+                channel.setCommand(command);
+                channel.connect();
+
+                // Prints the output of the command
+                BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.println(line);
+                }
+                in.close();
+
+                channel.disconnect();
             }
 
-            ChannelExec channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand(command);
-            channel.connect();
-
-            // Imprime a saída do comando
-            BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
-            in.close();
-
-            channel.disconnect();
             session.disconnect();
-            System.out.println("Desconectado de " + host);
+            System.out.println("Disconnected from " + host);
 
         } catch (JSchException | IOException e) {
             e.printStackTrace();
