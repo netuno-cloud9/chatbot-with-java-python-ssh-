@@ -45,12 +45,12 @@ public class SafeJar {
                 // Executes the chosen command
                 switch (choice) {
                     case "1":
-                        System.out.println("O instalador de pacotes irá atualizar o sistema e instalar o fail2ban, ufw, rkhunter e aide.");
+                        System.out.println("O instalador de pacotes irá atualizar o sistema e instalar o fail2ban, ufw, rkhunter, aide e nmap.");
                         System.out.println("Deseja continuar? y/N");
                         String choice2 = reader.readLine();
                         if (choice2.equalsIgnoreCase("y")) {
                             
-                          command = "sudo apt-get update && sudo apt-get install -y fail2ban ufw rkhunter aide";
+                          command = "sudo apt-get update && sudo apt-get install -y fail2ban ufw rkhunter aide nmap";
                           ChannelExec channel = (ChannelExec) session.openChannel("exec");
                           channel.setCommand(command);
                           channel.connect();
