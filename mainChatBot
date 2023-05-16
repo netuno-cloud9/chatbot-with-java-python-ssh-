@@ -6,6 +6,9 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class SafeJar extends JFrame implements ActionListener {
 
@@ -14,7 +17,14 @@ public class SafeJar extends JFrame implements ActionListener {
     private JTextArea input;
     private JScrollPane scroll;
     private JButton executeButton;
+    private JButton clearButton;
+    private JButton menuButton;
+    private JButton aboutButton;
+    private JButton pythonButton;
     private Session session;
+
+    private Timer animationTimer;
+    private int dialogX = -600;
 
     public SafeJar() {
         mainPanel = new JPanel(new BorderLayout());
@@ -23,37 +33,65 @@ public class SafeJar extends JFrame implements ActionListener {
         scroll = new JScrollPane(dialog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         executeButton = new JButton("Execute");
+        clearButton = new JButton("Clear");
+        menuButton = new JButton("Chat");
+        aboutButton = new JButton("About Me");
+        pythonButton = new JButton("Python");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
         setTitle("SafeJar Application");
-        
-        mainPanel.setBackground(Color.WHITE);
-        dialog.setBackground(Color.BLACK);
+
+        mainPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
+        dialog.setBackground(new Color(5, 7, 8));
         dialog.setForeground(Color.GREEN);
-        input.setBackground(Color.WHITE);
+        dialog.setFont(new Font("Helvetica", Font.BOLD, 12));
+        input.setBackground(Color.decode("#F5F2F1"));
         input.setForeground(Color.BLACK);
-        
+        input.setFont(new Font("Helvetica", Font.PLAIN, 12));
+
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
         inputPanel.add(input, BorderLayout.CENTER);
-        inputPanel.add(executeButton, BorderLayout.EAST);
-        
-        // Redesigned executeButton
-        executeButton.setPreferredSize(new Dimension(80, 30));
-        executeButton.setFont(new Font("Monospaced", Font.BOLD, 12));
-        executeButton.setBackground(new Color(255, 204, 0));
-        executeButton.setBorder(new LineBorder(new Color(0, 0, 0), 2, false));
-        executeButton.setFocusPainted(false);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
+        buttonPanel.add(executeButton);
+        buttonPanel.add(clearButton);
+        buttonPanel.add(menuButton);
+        buttonPanel.add(aboutButton);
+        buttonPanel.add(pythonButton);
 
         mainPanel.add(scroll, BorderLayout.CENTER);
         mainPanel.add(inputPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+
         add(mainPanel);
 
         executeButton.addActionListener(this);
-    displayWelcomeMessage(); // Display welcome message
+        clearButton.addActionListener(this);
+        menuButton.addActionListener(this);
+        aboutButton.addActionListener(this);
+        pythonButton.addActionListener(this);
+
+        animationTimer = new Timer(10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (dialogX < 0) {
+                    dialogX += 5;
+                    dialog.setLocation(dialogX, 0);
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        animationTimer.start();
+
+        displayWelcomeMessage(); // Display welcome message
     }
+
 
     private void displayWelcomeMessage() {
         String welcomeMessage = "Welcome to SafeJar Application!\n"
@@ -65,12 +103,24 @@ public class SafeJar extends JFrame implements ActionListener {
 
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == executeButton) {
             String command = input.getText();
             try {
                 executeCommand(command);
             } catch (JSchException | IOException ex) {
+                ex.printStackTrace();
+            }
+        } else if (e.getSource() == clearButton) {
+            clearScreen();
+        } else if (e.getSource() == menuButton) {
+            openMenu();
+        } else if (e.getSource() == aboutButton) {
+            showAboutMe();
+        } else if (e.getSource() == pythonButton) {
+            try {
+                executePythonCode();
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -111,19 +161,91 @@ public class SafeJar extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        SafeJar safeJar = new SafeJar();
-        safeJar.setVisible(true);
+    private void clearScreen() {
+        dialog.setText("");
+    }
 
-        String user = JOptionPane.showInputDialog(safeJar, "Enter the username:");
-        String password = JOptionPane.showInputDialog(safeJar, "Enter the password:");
-        String host = JOptionPane.showInputDialog(safeJar, "Enter the host IP address:");
-        int port = 22;
+    private void openMenu() {
+        String userInput = JOptionPane.showInputDialog(this, "Enter a message:");
+        if (userInput != null && !userInput.isEmpty()) {
+            String response = generateChatBotResponse(userInput);
+            dialog.append("User: " + userInput + "\n");
+            dialog.append("Chat Bot: " + response + "\n");
+        }
+    }
+
+    private String generateChatBotResponse(String userInput) {
+        return userInput; // Echo the user's input
+    }
+
+    private void showAboutMe() {
+        String aboutMessage = "SafeJar Application\n"
+                + "Version: 1.0\n"
+                + "Author: Your Name\n"
+                + "Description: This application provides a secure execution environment for commands.\n"
+                + "For more information, visit: www.example.com";
+
+        JOptionPane.showMessageDialog(this, aboutMessage, "About Me", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+   private void executePythonCode() throws IOException {
+    String pythonScript = "import speedtest\n\n"
+            + "# Create a Speedtest object\n"
+            + "st = speedtest.Speedtest()\n\n"
+            + "# Run the download speed test and print the results\n"
+            + "download_speed = st.download() / 1000000  # Convert bytes to megabits\n"
+            + "print(f\"Download speed: {download_speed:.2f} Mbps\")\n\n"
+            + "# Run the upload speed test and print the results\n"
+            + "upload_speed = st.upload() / 1000000  # Convert bytes to megabits\n"
+            + "print(f\"Upload speed: {upload_speed:.2f} Mbps\")\n\n"
+            + "# Get the ping time and print the results\n"
+            + "ping_time = st.results.ping\n"
+            + "print(f\"Ping time: {ping_time:.2f} ms\")";
+
+    // Create the Python script file
+        File scriptFile = File.createTempFile("speedtest", ".py");
+        FileWriter writer = new FileWriter(scriptFile);
+        writer.write(pythonScript);
+        writer.close();
+
+        // Execute the Python script
+        ProcessBuilder processBuilder = new ProcessBuilder("python", scriptFile.getAbsolutePath());
+        Process process = processBuilder.start();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            dialog.append(line + "\n");
+        }
+
+        reader.close();
 
         try {
-            safeJar.connect(user, password, host, port);
-        } catch (JSchException e) {
-            e.printStackTrace();
+            int exitCode = process.waitFor();
+            System.out.println("Python process exited with code: " + exitCode);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
         }
+
+        // Delete the temporary script file
+        scriptFile.delete();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            SafeJar safeJar = new SafeJar();
+            safeJar.setVisible(true);
+
+            String user = JOptionPane.showInputDialog(safeJar, "Enter the username:");
+            String password = JOptionPane.showInputDialog(safeJar, "Enter the password:");
+            String host = JOptionPane.showInputDialog(safeJar, "Enter the host IP address:");
+            int port = 22;
+
+            try {
+                safeJar.connect(user, password, host, port);
+            } catch (JSchException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
