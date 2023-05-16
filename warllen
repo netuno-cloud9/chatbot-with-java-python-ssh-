@@ -1,0 +1,211 @@
+package occult.safejar;
+
+import com.jcraft.jsch.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class SafeJar extends JFrame implements ActionListener {
+
+    private JPanel mainPanel;
+    private JTextArea dialog;
+    private JTextArea input;
+    private JScrollPane scroll;
+    private JButton executeButton;
+    private JButton clearButton;
+    private JButton menuButton;
+    private JButton aboutButton;
+    private Session session;
+
+    public SafeJar() {
+        mainPanel = new JPanel(new BorderLayout());
+        dialog = new JTextArea(20, 50);
+        input = new JTextArea(4, 40);
+        scroll = new JScrollPane(dialog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        executeButton = new JButton("Execute");
+        clearButton = new JButton("Clear");
+        menuButton = new JButton("Chat");
+        aboutButton = new JButton("About Me");
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setTitle("SafeJar Application");
+
+        mainPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
+        dialog.setBackground(new Color(5, 7, 8));
+        dialog.setForeground(Color.GREEN);
+        dialog.setFont(new Font("Helvetica", Font.BOLD, 12));
+        input.setBackground(Color.decode("#F5F2F1"));
+        input.setForeground(Color.BLACK);
+        input.setFont(new Font("Helvetica", Font.PLAIN, 12));
+
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        inputPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
+        inputPanel.add(input, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(Color.decode("#F5F5F5")); // Light Gray
+        buttonPanel.add(executeButton);
+        buttonPanel.add(clearButton);
+        buttonPanel.add(menuButton);
+        buttonPanel.add(aboutButton);
+
+        mainPanel.add(scroll, BorderLayout.CENTER);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        add(mainPanel);
+
+        executeButton.addActionListener(this);
+        clearButton.addActionListener(this);
+        menuButton.addActionListener(this);
+        aboutButton.addActionListener(this);
+
+        displayWelcomeMessage(); // Display welcome message
+    }
+
+
+    private void displayWelcomeMessage() {
+        String welcomeMessage = "Welcome to SafeJar Application!\n"
+                + "Please enter your command and click the Execute button to execute it.\n"
+                + "You can view the command output in the dialog area below.";
+
+        JOptionPane.showMessageDialog(this, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == executeButton) {
+            String command = input.getText();
+            try {
+                executeCommand(command);
+            } catch (JSchException | IOException ex) {
+                ex.printStackTrace();
+            }
+          } else if (e.getSource() == clearButton) {
+            clearScreen();
+        } else if (e.getSource() == menuButton) {
+            openMenu();
+        } else if (e.getSource() == aboutButton) {
+            showAboutMe();
+        }
+    }
+
+    private void executeCommand(String command) throws JSchException, IOException {
+        if (session != null && session.isConnected()) {
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.connect();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                dialog.append(line + "\n");
+            }
+
+            in.close();
+            channel.disconnect();
+        } else {
+            JOptionPane.showMessageDialog(this, "Not connected to a server", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void connect(String user, String password, String host, int port) throws JSchException {
+        JSch jsch = new JSch();
+        session = jsch.getSession(user, host, port);
+        session.setPassword(password);
+        session.setConfig("StrictHostKeyChecking", "no");
+        session.connect();
+        dialog.append("Connected to " + host + "\n");
+    }
+
+    public void disconnect() {
+        if (session != null && session.isConnected()) {
+            session.disconnect();
+            dialog.append("Disconnected from the server\n");
+        }
+    }
+    
+     private void clearScreen() {
+        dialog.setText("");
+    }
+
+     private void openMenu() {
+    // Implement your menu functionality here
+    // For a basic chat bot structure, you can use a JOptionPane for user input and display responses in the dialog area
+    String userInput = JOptionPane.showInputDialog(this, "Enter a message:");
+    if (userInput != null && !userInput.isEmpty()) {
+        String response = generateChatBotResponse(userInput);
+        dialog.append("User: " + userInput + "\n");
+        dialog.append("Chat Bot: " + response + "\n");
+    }
+}
+
+private Connection getConnection(String host, int port, String database, String username, String password) throws SQLException {
+    String url = "jdbc:mariadb://" + host + ":" + port + "/" + database;
+    return DriverManager.getConnection(url, username, password);
+}
+
+     
+     
+private String generateChatBotResponse(String userInput) {
+    try {
+        Connection connection = getConnection("localhost", 3306, "your_database_name", "your_username", "your_password");
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(userInput);
+
+        StringBuilder response = new StringBuilder();
+        while (resultSet.next()) {
+            // Assuming the query returns a single column, you can modify this part to format the result according to your needs
+            response.append(resultSet.getString(1)).append("\n");
+        }
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+
+        return response.toString();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "Error executing the query: " + e.getMessage();
+    }
+}
+
+private void showAboutMe() {
+    // Implement your "About Me" functionality here
+    String aboutMessage = "SafeJar Application\n"
+            + "Version: 1.0\n"
+            + "Author: Your Name\n"
+            + "Description: This application provides a secure execution environment for commands.\n"
+            + "For more information, visit: www.example.com";
+
+    JOptionPane.showMessageDialog(this, aboutMessage, "About Me", JOptionPane.INFORMATION_MESSAGE);
+}
+     
+    
+    
+    public static void main(String[] args) {
+        SafeJar safeJar = new SafeJar();
+        safeJar.setVisible(true);
+
+        String user = JOptionPane.showInputDialog(safeJar, "Enter the username:");
+        String password = JOptionPane.showInputDialog(safeJar, "Enter the password:");
+        String host = JOptionPane.showInputDialog(safeJar, "Enter the host IP address:");
+        int port = 22;
+
+        try {
+            safeJar.connect(user, password, host, port);
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
+    }
+}
