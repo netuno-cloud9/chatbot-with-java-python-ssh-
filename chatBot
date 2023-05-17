@@ -112,6 +112,8 @@ String welcomeMessage =
                         handleDictionaryCommand();
                     } else if (quote.equalsIgnoreCase("help")) {
                         handleHelpCommand();
+                         } else if (quote.equalsIgnoreCase("toca do coelho")) {
+                        handlerabbitCommand();
                     } else {
                         processInput(quote);
                     }
@@ -121,6 +123,13 @@ String welcomeMessage =
                 }
             }
         });
+    }
+    
+    
+    
+    private void handlerabbitCommand() {
+            RabbitCommandGame game = new RabbitCommandGame();
+        game.start();
     }
 
     private void handleLsCommand() {
