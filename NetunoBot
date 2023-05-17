@@ -9,7 +9,7 @@ import javax.swing.border.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
+
 
 
 public class SafeJar extends JFrame implements ActionListener {
@@ -24,7 +24,6 @@ public class SafeJar extends JFrame implements ActionListener {
     private JButton aboutButton;
     private JButton speedTestButton;
     private JButton configButton;
-    private JButton scanButton;
     private Session session;
     
     private Timer animationTimer;
@@ -47,7 +46,6 @@ public class SafeJar extends JFrame implements ActionListener {
         aboutButton = new JButton("About Me");
         speedTestButton = new JButton("SpeedTest");
         configButton = new JButton("Config");
-        scanButton = new JButton("Scan");
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -80,7 +78,6 @@ public class SafeJar extends JFrame implements ActionListener {
         buttonPanel.add(aboutButton);
         buttonPanel.add(speedTestButton);
         buttonPanel.add(configButton);
-        buttonPanel.add(scanButton);
 
         mainPanel.add(scroll, BorderLayout.CENTER);
         mainPanel.add(inputPanel, BorderLayout.SOUTH);
@@ -94,7 +91,6 @@ public class SafeJar extends JFrame implements ActionListener {
         aboutButton.addActionListener(this);
         speedTestButton.addActionListener(this);
         configButton.addActionListener(this);
-        scanButton.addActionListener(this);
 
         animationTimer = new Timer(10, new ActionListener() {
             @Override
@@ -120,21 +116,19 @@ public class SafeJar extends JFrame implements ActionListener {
 }
 
 
-    private void displayWelcomeMessage() {
-String welcomeMessage =
-    "Siga o coelho branco \n" +
-    " __  __          __                              \n" +
-    "/\\ \\/\\ \\        /\\ \\__                           \n" +
-    "\\ \\ `\\\\ \\     __\\ \\ ,_\\  __  __    ___     ___   \n" +
-    " \\ \\ , ` \\  /'__`\\ \\ \\/ /\\ \\/\\ \\ /' _ `\\  / __`\\ \n" +
-    "  \\ \\ \\\\`\\ \\/\\  __/\\ \\ \\_\\ \\ \\_\\ \\/\\ \\/\\ \\/\\ \\L\\ \\\n" +
-    "   \\ \\_\\ \\_\\ \\____\\ \\__\\\\ \\____/\\ \\_\\ \\_\\ \\____/\n" +
-    "    \\/_/\\/_/\\/____/ \\/__/ \\/___/  \\/_/\\/_/\\/___/ \n";
+  private void displayWelcomeMessage() {
+    String welcomeMessage =
+            "Bem-vindo ao SafeJar! \n" +
+            "        Siga o coelho branco.\n\n" +
+            "Para usar este programa, por favor, informe (ou não):\n" +
+            "- Nome de usuário: Seu nome de usuário SSH\n" +
+            "- Senha: Sua senha SSH\n" +
+            "- Endereço IP do Host: O endereço IP do host SSH\n\n" +
+            "Clique em 'OK' para continuar.";
 
-        
-        
-        JOptionPane.showMessageDialog(this, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
-    }
+    JOptionPane.showMessageDialog(this, welcomeMessage, "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
+}
+
 
 
 
@@ -171,12 +165,6 @@ String welcomeMessage =
             }
         } else if (e.getSource() == configButton) {
             openConfig();
-        } else if (e.getSource() == scanButton) {
-            try {
-                executePythonCode2();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
@@ -262,12 +250,8 @@ private String toHexString(Color color) {
     }
 
     private void openMenu() {
-        String userInput = JOptionPane.showInputDialog(this, "Enter a message:");
-        if (userInput != null && !userInput.isEmpty()) {
-            String response = generateChatBotResponse(userInput);
-            dialog.append("User: " + userInput + "\n");
-            dialog.append("Chat Bot: " + response + "\n");
-        }
+       new ChatBot();
+       
     }
 
     private String generateChatBotResponse(String userInput) {
