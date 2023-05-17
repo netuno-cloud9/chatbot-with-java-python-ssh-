@@ -1,0 +1,202 @@
+package occult.safejar;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class ChatBot extends JFrame {
+    private JPanel panel;
+    private JTextArea dialog;
+    private JTextArea input;
+
+    private Map<String, String[]> chatBot = new HashMap<>();
+
+    public static void main(String[] args) {
+        try {
+            javax.swing.SwingUtilities.invokeLater(ChatBot::new);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ChatBot() {
+        super("NetunoBot");
+
+        initializeChatBot();
+
+        setSize(600, 400);
+        setResizable(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Change the default close operation
+
+        // Welcome message
+        String welcomeMessage = "\n\n";
+        String philosophicalQuote = getPhilosophicalQuote();
+        dialog = new JTextArea(welcomeMessage + philosophicalQuote + "\n\n", 20, 50);
+        dialog.setBackground(new Color(6, 3, 6));
+        dialog.setForeground(new Color(100, 255, 100));
+        dialog.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        dialog.setEditable(true);
+
+        JScrollPane scroll = new JScrollPane(dialog,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+
+        input = new JTextArea(1, 50);
+        input.setBackground(new Color(40, 44, 45));
+        input.setForeground(new Color(255, 215, 0));
+        input.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        input.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 255, 200)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+
+        panel = new JPanel(new BorderLayout());
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(input, BorderLayout.SOUTH);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBackground(new Color(220, 220, 220, 100));
+
+        add(panel);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        input.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    input.setEditable(true);
+                                        String quote = input.getText().trim();
+                    input.setText("");
+                    addText("\t" + quote);
+                    quote.trim();
+
+                    // Handle specific commands
+                    if (quote.equalsIgnoreCase("ls")) {
+                        handleLsCommand();
+                    } else if (quote.equalsIgnoreCase("python")) {
+                        handlePythonCommand();
+                    } else if (quote.equalsIgnoreCase("java")) {
+                        handleJavaCommand();
+                    } else if (quote.equalsIgnoreCase("nmap")) {
+                        handleNmapCommand();
+                    } else if (quote.equalsIgnoreCase("dictionary")) {
+                        handleDictionaryCommand();
+                    } else if (quote.equalsIgnoreCase("help")) {
+                        handleHelpCommand();
+                    } else {
+                        processInput(quote);
+                    }
+                    addText("\n");
+                    input.requestFocusInWindow();
+
+                }
+            }
+        });
+    }
+
+    private void handleLsCommand() {
+        addText("\n~$~\tThe 'ls' command lists files and directories in a UNIX-based system.");
+    }
+
+    private void handlePythonCommand() {
+        addText("\n~$~\tPython is a popular programming language known for its simplicity and readability.");
+    }
+
+    private void handleJavaCommand() {
+        addText("\n~$~\tJava is a widely used programming language for building enterprise-level applications.");
+    }
+
+    private void handleNmapCommand() {
+        addText("\n~$~\tNmap is a powerful network scanning tool used for discovering hosts and services on a network.");
+    }
+
+    private void handleDictionaryCommand() {
+        addText("\n~$~\tHere is a list of commands:\n");
+        addText("- ls: List files and directories in a UNIX-based system.\n");
+        addText("- python: Python programming language.\n");
+        addText("- java: Java programming language.\n");
+        addText("- nmap: Network scanning tool.\n");
+        // Add more commands and their explanations here
+    }
+
+    private void handleHelpCommand() {
+        addText("\n$\tHere are some keywords you can use:\n");
+        addText("- ls\n");
+        addText("- python\n");
+        addText("- java\n");
+        addText("- nmap\n");
+        // Add more keywords here
+    }
+
+    private void processInput(String quote) {
+        quote = quote.toLowerCase().replaceAll("[!?.]+$", "");
+
+        boolean foundMatch = false;
+        for (Map.Entry<String, String[]> entry : chatBot.entrySet()) {
+            String[] greetings = entry.getKey().split("\\|");
+            if (inArray(quote, greetings)) {
+                String[] responses = entry.getValue();
+                int r = new Random().nextInt(responses.length);
+                addText("$\t" + responses[r] + "\n");
+                foundMatch = true;
+                break;
+            }
+        }
+
+        if (!foundMatch) {
+            String[] defaultResponses = chatBot.get("default");
+            int r = new Random().nextInt(defaultResponses.length);
+            addText("\t" + defaultResponses[r] + "\n");
+        }
+    }
+
+    private void addText(String str) {
+        dialog.append(str);
+        dialog.setCaretPosition(dialog.getDocument().getLength());
+    }
+
+    private boolean inArray(String input, String[] array) {
+        for (String str : array) {
+            if (str.equals(input)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void initializeChatBot() {
+        chatBot.put("hi|hello|hola|ola|tô de boa", new String[]{"hi", "hello", "resposta"});
+        chatBot.put("como vai você|how r you|how r u |how are u", new String[]{"good", "doing well"});
+        chatBot.put("ls|cd|pwd|mkdir|rm|grep|chmod|chown|ssh", new String[]{"UNIX commands are powerful tools for managing files, directories, and running processes in a UNIX-based system."});
+        chatBot.put("python|pip|virtualenv|import|list|dictionary|function|class", new String[]{"Python is a popular programming language known for its simplicity and readability."});
+        chatBot.put("java|class|object|method|interface|inheritance|polymorphism", new String[]{"Java is a widely used programming language for building enterprise-level applications."});
+        chatBot.put("nmap|Wireshark|Metasploit|Burp Suite|Snort|Aircrack-ng", new String[]{"Security tools like nmap, Wireshark, and Metasploit are essential for assessing and securing computer systems."});
+        chatBot.put("yes", new String[]{"no", "NO", "NO!!!!!!!"});
+        chatBot.put("default", new String[]{"Desculpe querido, não entendi", "Tente novamente", "noob", "é sério isso?", "(indisponível para você)"});
+    }
+
+    private String getPhilosophicalQuote() {
+        String[] philosophicalQuotes = {
+            "The only true wisdom is in knowing you know nothing. - Socrates",
+            "The unexamined life is not worth living. - Socrates",
+            "I think, therefore I am. - René Descartes",
+            "In the midst of chaos, there is also opportunity. - Sun Tzu",
+            "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment. - Buddha"
+        };
+
+        int randomIndex = new Random().nextInt(philosophicalQuotes.length);
+
+        return philosophicalQuotes[randomIndex];
+    }
+}
