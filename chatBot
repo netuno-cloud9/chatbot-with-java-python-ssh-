@@ -31,21 +31,24 @@ public class ChatBot extends JFrame {
         }
     }
 
-     private void displayWelcomeMessage() {
-String welcomeMessage =
-    "*netuno \n" +
-    " __  __          __                              \n" +
-    "/\\ \\/\\ \\        /\\ \\__                           \n" +
-    "\\ \\ `\\\\ \\     __\\ \\ ,_\\  __  __    ___     ___   \n" +
-    " \\ \\ , ` \\  /'__`\\ \\ \\/ /\\ \\/\\ \\ /' _ `\\  / __`\\ \n" +
-    "  \\ \\ \\\\`\\ \\/\\  __/\\ \\ \\_\\ \\ \\_\\ \\/\\ \\/\\ \\/\\ \\L\\ \\\n" +
-    "   \\ \\_\\ \\_\\ \\____\\ \\__\\\\ \\____/\\ \\_\\ \\_\\ \\____/\n" +
-    "    \\/_/\\/_/\\/____/ \\/__/ \\/___/  \\/_/\\/_/\\/___/ \n";
+    private void displayWelcomeMessage() {
+    String welcomeMessage =
+        "<html><body style='font-size:8px; font-family:Arial, sans-serif;'>"
+        + "<b>Bem-vindo ao NetunoBot!</b><br><br>"
+        + "<u>Instruções de uso</u><br>"
+        + "------------------------------------<br><br>"
+        + "1. Você pode editar o texto do programa.<br><br>"
+        + "2. Digite um comando na área de texto e pressione Enter para submetê-lo.<br><br>"
+        + "3. Preste bastante atenção nas mensagens exibidas!<br><br>"
+        + "4. Digite 'help' para obter ajuda sobre como começar e ver comandos úteis.<br><br>"
+        + "5. Digite 'py' para executar scripts em Python.<br><br>"
+        + "6. Digite 'exit' para encerrar a aplicação de forma segura.<br><br>"
+        + "------------------------------------<br><br>"
+        + "Aproveite o NetunoBot!"
+        + "</body></html>";
 
-        
-        
-        JOptionPane.showMessageDialog(this, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
-    }
+    JOptionPane.showMessageDialog(this, welcomeMessage, "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
+}
     
     
     public ChatBot() {
@@ -110,9 +113,11 @@ String welcomeMessage =
                         handleNmapCommand();
                     } else if (quote.equalsIgnoreCase("dictionary")) {
                         handleDictionaryCommand();
+                    } else if (quote.equalsIgnoreCase("exit")) {
+                        handleexitCommand();
                     } else if (quote.equalsIgnoreCase("help")) {
                         handleHelpCommand();
-                         } else if (quote.equalsIgnoreCase("toca do coelho")) {
+                    } else if (quote.equalsIgnoreCase("toca do coelho")) {
                         handlerabbitCommand();
                     } else {
                         processInput(quote);
@@ -121,6 +126,15 @@ String welcomeMessage =
                     input.requestFocusInWindow();
 
                 }
+            }
+
+            private void handleexitCommand() {
+              System.exit(0);
+              disconnect();
+            }
+
+            private void disconnect() {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
             }
         });
     }
@@ -214,13 +228,20 @@ String welcomeMessage =
     }
 
     private String getPhilosophicalQuote() {
-        String[] philosophicalQuotes = {
-            "The only true wisdom is in knowing you know nothing. - Socrates",
-            "The unexamined life is not worth living. - Socrates",
-            "I think, therefore I am. - René Descartes",
-            "In the midst of chaos, there is also opportunity. - Sun Tzu",
-            "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment. - Buddha"
-        };
+       String[] philosophicalQuotes = {
+    "The only true wisdom is in knowing you know nothing. - Socrates",
+    "The unexamined life is not worth living. - Socrates",
+    "I think, therefore I am. - René Descartes",
+    "In the midst of chaos, there is also opportunity. - Sun Tzu",
+    "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment. - Buddha",
+    "Porque os programadores preferem Linux? Porque o root é o seu diretório home!",
+    "Qual é o jogo favorito de um engenheiro Unix? `sudo`-ku!",
+    "Почему программисты предпочитают Linux? Потому что root - их домашняя директория!",
+    "Какой любимый фильм программистов? Переводчик на Windows!",
+    "なぜプログラマはLinuxを好むのですか？彼らのホームディレクトリはルートですから！",
+    "日本語でプログラマのお気に入りのゲームは何ですか？「sudo」-く！",
+    "Varför föredrar programmerare Linux? Eftersom root är deras hemkatalog!"
+};
 
         int randomIndex = new Random().nextInt(philosophicalQuotes.length);
 
