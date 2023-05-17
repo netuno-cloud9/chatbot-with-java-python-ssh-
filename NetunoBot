@@ -27,7 +27,7 @@ public class SafeJar extends JFrame implements ActionListener {
     private Session session;
     
     private Timer animationTimer;
-    private int dialogX = -600;
+    private int dialogX = -1000;
 
     public SafeJar() {
         initializeUI();
@@ -60,10 +60,10 @@ public class SafeJar extends JFrame implements ActionListener {
         mainPanel.setBackground(Color.decode("#1A1A1A")); // Dark Gray
         dialog.setBackground(new Color(5, 7, 8));
         dialog.setForeground(Color.GREEN);
-        dialog.setFont(new Font("Helvetica", Font.BOLD, 12));
+        dialog.setFont(new Font("Helvetica", Font.BOLD, 14));
         input.setBackground(Color.decode("#F5F2F1"));
         input.setForeground(Color.BLACK);
-        input.setFont(new Font("Helvetica", Font.PLAIN, 12));
+        input.setFont(new Font("Helvetica", Font.PLAIN, 14));
 
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -110,21 +110,27 @@ public class SafeJar extends JFrame implements ActionListener {
     private void confirmExit() {
     int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
     if (option == JOptionPane.YES_OPTION) {
-        disconnect();
-        System.exit(0);
+            new ChatBot();
+        
+        /**
+ *System.exit(0);
+ * disconnect();
+ */
+        
     }
 }
 
 
-  private void displayWelcomeMessage() {
+ private void displayWelcomeMessage() {
     String welcomeMessage =
-            "Bem-vindo ao SafeJar! \n" +
-            "        Siga o coelho branco.\n\n" +
-            "Para usar este programa, por favor, informe (ou não):\n" +
-            "- Nome de usuário: Seu nome de usuário SSH\n" +
-            "- Senha: Sua senha SSH\n" +
-            "- Endereço IP do Host: O endereço IP do host SSH\n\n" +
-            "Clique em 'OK' para continuar.";
+        "<html><body style='font-size:8px; font-family:Arial, sans-serif; color:#0000FF;'>"
+        + "<b>Bem-vindo ao SSHTunel SafeJar!</b><br><br>"
+        + "Para se conectar com o servidor remoto, por favor, informe:<br>"
+        + "- Nome de usuário: Seu nome de usuário SSH<br>"
+        + "- Senha: Sua senha SSH<br>"
+        + "- Endereço IP do Host: O endereço IP do host SSH<br><br>"
+        + "<font color='#FF0000'>Clique em 'OK' para continuar.</font>"
+        + "</body></html>";
 
     JOptionPane.showMessageDialog(this, welcomeMessage, "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
 }
@@ -259,12 +265,16 @@ private String toHexString(Color color) {
     }
 
     private void showAboutMe() {
-        String aboutMessage = "Netuno Bot\n"
-                + "Version: 1.0\n"
-                + "Occult Group\n"
-                + "Descrição: Esse é um aplicativo experimental, use sob sua própria conta e risco, não oferecemos garantias de nenhum tipo.\n"
-                + "Para mais informações, entre na toca do coelho";
-
+    String aboutMessage =
+        "<html><body style='font-size:8px; font-family:Arial, sans-serif; color:#FF0000;'>"
+        + "<b>Netuno Bot</b><br>"
+        + "Version: 1.0<br>"
+        + "Occult Group<br><br>"
+        + "Este é um aplicativo experimental.<br>"
+        + "Use por sua própria conta e risco!<br>"
+        + "Não oferecemos garantias de nenhum tipo.<br><br>"
+        + "<font color='#00FF00'>Para mais informações, digite 'help' no terminal do NetunoBot.</font>"
+        + "</body></html>";
         JOptionPane.showMessageDialog(this, aboutMessage, "About Me", JOptionPane.INFORMATION_MESSAGE);
     }
     
@@ -311,98 +321,6 @@ private String toHexString(Color color) {
         scriptFile.delete();
     }
 
-private void executePythonCode2() throws IOException {
-    String targetIp = JOptionPane.showInputDialog(null, "Enter the target IP address:");
-    int targetPort = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the target port:"));
-
-    String pythonScript = "import socket\n\n"
-            + "target_ip = '" + targetIp + "'\n"
-            + "target_port = " + targetPort + "\n"
-            + "payload = b\"PUT /cgi-bin/restart.cgi HTTP/1.1\\r\\nHost: \" + target_ip.encode() + b\"\\r\\n\\r\\n\"\n\n"
-            + "sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
-            + "try:\n"
-            + "    sock.connect((target_ip, target_port))\n"
-            + "    sock.sendall(payload)\n"
-            + "    response = sock.recv(1024)\n"
-            + "    print(response)\n"
-            + "    exit_code = 0\n" // Add exit code for success
-            + "except Exception as e:\n"
-            + "    print(str(e))\n"
-            + "    exit_code = 1\n"; // Add exit code for failure
-
-    // Create the Python script file
-    File scriptFile = File.createTempFile("script", ".py");
-    FileWriter writer = new FileWriter(scriptFile);
-    writer.write(pythonScript);
-    writer.close();
-
-    // Execute the Python script
-    ProcessBuilder processBuilder = new ProcessBuilder("python", scriptFile.getAbsolutePath());
-    Process process = processBuilder.start();
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    String line;
-    while ((line = reader.readLine()) != null) {
-        System.out.println(line); // Output to console (optional)
-        updateUIWithOutput(line); // Update UI with the output
-    }
-
-    // Read the error output
-    BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-    StringBuilder errorMessage = new StringBuilder();
-    String errorLine;
-    while ((errorLine = errorReader.readLine()) != null) {
-        System.err.println(errorLine); // Output to console (optional)
-        errorMessage.append(errorLine).append("\n");
-        // Display errorLine in your program's panel or UI
-        updateUIWithError(errorLine); // Update UI with the error message
-    }
-
-    reader.close();
-    errorReader.close();
-
-    try {
-        int exitCode = process.waitFor();
-        System.out.println("Python process exited with code: " + exitCode);
-        // Display exitCode in your program's panel or UI
-        if (exitCode == 0) {
-            updateUIWithSuccessMessage("Python script executed successfully");
-        } else {
-            System.err.println("Error output:");
-            System.err.println(errorMessage.toString());
-        }
-        updateUIWithExitCode(exitCode); // Update UI with the exit code
-    } catch (InterruptedException ex) {
-        ex.printStackTrace();
-    }
-
-    // Delete the temporary script file
-    scriptFile.delete();
-}
-    // Update your program's UI with the Python script output
-    // For example, display the output in a text area or console panel
-
-private void updateUIWithExitCode(int exitCode) {
-    // Update your program's UI with the exit code
-    // For example, display the exit code in a label or perform specific actions based on the code
-    System.out.println("Python process exited with code: " + exitCode);
-    // Display exitCode in your program's panel or UI
-    if (exitCode == 0) {
-        updateUIWithSuccessMessage("Python script executed successfully");
-    } else {
-        updateUIWithError("Python script exited with code: " + exitCode);
-    }
-}
-
-
-private void updateUIWithError(String error) {
-    // Update your program's UI with the error message
-    // For example, display the error message in a dialog box or highlight an error indicator
-}
-
-private void updateUIWithSuccessMessage(String message) {
-    // Update your program's UI with the success message
-}
    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -419,27 +337,6 @@ private void updateUIWithSuccessMessage(String message) {
                 e.printStackTrace();
             }
         });
-    }
-
-  private void updateUIWithOutput(String output) {
-    // Update your program's UI with the output
-    // For example, append the output to a text area or display it in a label
-    outputTextArea.append(output + "\n"); // Replace `outputTextArea` with your UI element
-}
-
-
-    private void updateUIWithExitCode() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    private static class outputTextArea {
-
-        private static void append(String string) {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        public outputTextArea() {
-        }
     }
 }
 
