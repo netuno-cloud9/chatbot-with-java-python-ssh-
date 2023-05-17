@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 public class ChatBot extends JFrame {
     private JPanel panel;
@@ -30,9 +31,26 @@ public class ChatBot extends JFrame {
         }
     }
 
+     private void displayWelcomeMessage() {
+String welcomeMessage =
+    "*netuno \n" +
+    " __  __          __                              \n" +
+    "/\\ \\/\\ \\        /\\ \\__                           \n" +
+    "\\ \\ `\\\\ \\     __\\ \\ ,_\\  __  __    ___     ___   \n" +
+    " \\ \\ , ` \\  /'__`\\ \\ \\/ /\\ \\/\\ \\ /' _ `\\  / __`\\ \n" +
+    "  \\ \\ \\\\`\\ \\/\\  __/\\ \\ \\_\\ \\ \\_\\ \\/\\ \\/\\ \\/\\ \\L\\ \\\n" +
+    "   \\ \\_\\ \\_\\ \\____\\ \\__\\\\ \\____/\\ \\_\\ \\_\\ \\____/\n" +
+    "    \\/_/\\/_/\\/____/ \\/__/ \\/___/  \\/_/\\/_/\\/___/ \n";
+
+        
+        
+        JOptionPane.showMessageDialog(this, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    
     public ChatBot() {
         super("NetunoBot");
-
+        displayWelcomeMessage();
         initializeChatBot();
 
         setSize(600, 400);
