@@ -10,8 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
-
 public class SafeJar extends JFrame implements ActionListener {
 
     private JPanel mainPanel;
@@ -19,15 +17,15 @@ public class SafeJar extends JFrame implements ActionListener {
     private JTextArea input;
     private JScrollPane scroll;
     private JButton executeButton;
-    private JButton clearButton;
+    private JButton jarPyButton;
+    private JButton clearButton; 
     private JButton menuButton;
     private JButton aboutButton;
     private JButton speedTestButton;
     private JButton configButton;
     private Session session;
-    
-    private Timer animationTimer;
-    private int dialogX = -1000;
+    private int option;
+
 
     public SafeJar() {
         initializeUI();
@@ -35,19 +33,30 @@ public class SafeJar extends JFrame implements ActionListener {
     }
 
     private void initializeUI() {
+        dialog = new JTextArea();
+        input = new JTextArea();
+        dialog.setLineWrap(true);
+        input.setLineWrap(true);
         mainPanel = new JPanel(new BorderLayout());
-        dialog = new JTextArea(20, 50);
-        input = new JTextArea(4, 40);
+      
+            addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmExit();
+            }
+        });
+            
         scroll = new JScrollPane(dialog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         executeButton = new JButton("Execute");
-        clearButton = new JButton("Clear");
+        jarPyButton = new JButton("PyEditor");
+        clearButton = new JButton("Limpa tela");
         menuButton = new JButton("NetunoBot");
-        aboutButton = new JButton("About Me");
-        speedTestButton = new JButton("SpeedTest");
-        configButton = new JButton("Config");
+        aboutButton = new JButton("Sobre mim");
+        speedTestButton = new JButton("Relatório");
+        configButton = new JButton("Configurações");
 
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -57,66 +66,83 @@ public class SafeJar extends JFrame implements ActionListener {
         setSize(600, 400);
         setTitle("SafeJar Application");
 
-        mainPanel.setBackground(Color.decode("#1A1A1A")); // Dark Gray
-        dialog.setBackground(new Color(5, 7, 8));
-        dialog.setForeground(Color.GREEN);
-        dialog.setFont(new Font("Helvetica", Font.BOLD, 14));
-        input.setBackground(Color.decode("#F5F2F1"));
-        input.setForeground(Color.BLACK);
-        input.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        inputPanel.setBackground(Color.decode("#1A1A1A")); // Dark Gray
-        inputPanel.add(input, BorderLayout.CENTER);
+        inputPanel.setBorder(new TitledBorder("Input"));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.setBackground(Color.decode("#1A1A1A")); // Dark Gray
-        buttonPanel.add(executeButton);
+        inputPanel.add(input, BorderLayout.CENTER);
+        inputPanel.add(executeButton, BorderLayout.EAST);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(jarPyButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(menuButton);
         buttonPanel.add(aboutButton);
         buttonPanel.add(speedTestButton);
         buttonPanel.add(configButton);
 
-        mainPanel.add(scroll, BorderLayout.CENTER);
-        mainPanel.add(inputPanel, BorderLayout.SOUTH);
-        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+        // Apply styles to buttons
+        executeButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        executeButton.setFont(new Font("Arial", Font.BOLD, 12));
+        jarPyButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        jarPyButton.setFont(new Font("Arial", Font.BOLD, 12));
+        clearButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        clearButton.setFont(new Font("Arial", Font.BOLD, 12));
+        menuButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        menuButton.setFont(new Font("Arial", Font.BOLD, 12));
+        aboutButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        aboutButton.setFont(new Font("Arial", Font.BOLD, 12));
+        speedTestButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        speedTestButton.setFont(new Font("Arial", Font.BOLD, 12));
+        configButton.setBackground(Color.decode("#ECECEC")); // Light Gray
+        configButton.setFont(new Font("Arial", Font.BOLD, 12));
 
-        add(mainPanel);
-
+        // Add action listeners to buttons
         executeButton.addActionListener(this);
+        jarPyButton.addActionListener(this);
         clearButton.addActionListener(this);
         menuButton.addActionListener(this);
         aboutButton.addActionListener(this);
         speedTestButton.addActionListener(this);
         configButton.addActionListener(this);
 
-        animationTimer = new Timer(10, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dialogX < 0) {
-                    dialogX += 5;
-                    dialog.setLocation(dialogX, 0);
-                    repaint();
-                } else {
-                    ((Timer) e.getSource()).stop();
-                }
+        mainPanel.add(scroll, BorderLayout.CENTER);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        setContentPane(mainPanel);
+        setLocationRelativeTo(null); // Center the frame on the screen
+        
+        // Add KeyListener to the input area
+input.addKeyListener(new KeyAdapter() {
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            String command = input.getText();
+            try {
+                executeCommand(command);
+            } catch (JSchException | IOException ex) {
+                ex.printStackTrace();
             }
-        });
-        animationTimer.start();
+        }
     }
+});
+
+// Set default button for Enter key press
+getRootPane().setDefaultButton(executeButton);
+
+setContentPane(mainPanel);
+setLocationRelativeTo(null); // Center the frame on the screen
+    }
+
     
-    private void confirmExit() {
-    int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
+private void confirmExit() {
+    option = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
     if (option == JOptionPane.YES_OPTION) {
-            new ChatBot();
-        
-        /**
- *System.exit(0);
- * disconnect();
- */
-        
+        disconnect();
+        System.exit(0);
     }
 }
 
@@ -139,8 +165,8 @@ public class SafeJar extends JFrame implements ActionListener {
 
 
     private String formatTemplate(String template) {
-        String innerScreenColor = "#F5F2F1";
-        String textColor = "#000000";
+        String innerScreenColor = "#525A5F";
+        String textColor = "#073B17";
 
         String formattedTemplate = template.replace("{{INNER_SCREEN_COLOR}}", innerScreenColor)
                 .replace("{{TEXT_COLOR}}", textColor);
@@ -157,6 +183,9 @@ public class SafeJar extends JFrame implements ActionListener {
             } catch (JSchException | IOException ex) {
                 ex.printStackTrace();
             }
+        } else if (e.getSource() == jarPyButton) {
+            PyIDE pyIDE = new PyIDE();
+            pyIDE.start();
         } else if (e.getSource() == clearButton) {
             clearScreen();
         } else if (e.getSource() == menuButton) {
