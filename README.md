@@ -1,6 +1,4 @@
-
-Visão geral
-JDK 20 é uma aplicação Java desenvolvida utilizando o Apache NetBeans e o Maven. Ela utiliza o framework Swing para fornecer uma interface gráfica amigável ao usuário. O objetivo desta aplicação é estimular o aprendizado e demonstrar o uso e as capacidades do JDK 20.
+SafeJar é  aplicação Java desenvolvida utilizando o Apache NetBeans e o Maven. Ela utiliza o framework Swing para fornecer uma interface gráfica amigável ao usuário. O objetivo desta aplicação é estimular o aprendizado e demonstrar o uso e as capacidades do JDK 20.
 
 Recursos
 Interface Gráfica do Usuário (GUI) construída com Swing.
@@ -38,7 +36,7 @@ ________________________________________________________________________________
 
 
 Overview
-JDK 20 is a Java application developed using Apache NetBeans and Maven. It utilizes the Swing framework to provide a user-friendly graphical interface. The purpose of this application is stimulate learning and  demonstrate the usage and capabilities of JDK 20.
+SafeJar is a Java application developed using Apache NetBeans and Maven. It utilizes the Swing framework to provide a user-friendly graphical interface. The purpose of this application is stimulate learning and  demonstrate the usage and capabilities of JDK 20.
 
 Features
 Graphical User Interface (GUI) built with Swing.
