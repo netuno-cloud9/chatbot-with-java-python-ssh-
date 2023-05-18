@@ -1,0 +1,169 @@
+package occult.safejar;
+
+/**
+ *
+ * @author ariel
+ */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.script.*;
+
+
+public class PyIDE {
+    private JFrame frame;
+    private JTextArea textArea;
+    private JMenu configMenu;
+    private JMenu fileMenu;
+    private JMenu preferencesMenu;
+    private JMenu templatesMenu;
+
+    public void start() {
+        initialize();
+        frame.setVisible(true);
+    }
+
+    private void initialize() {
+        frame = new JFrame();
+        frame.setTitle("BASIC IDE");
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                handleWindowClosing();
+            }
+        });
+
+        frame.setPreferredSize(new Dimension(800, 600));
+
+        // Set the background color
+        Color backgroundColor = new Color(255, 255, 255);
+        frame.getContentPane().setBackground(backgroundColor);
+
+        textArea = new JTextArea();
+        textArea.setFont(new Font("Courier New", Font.PLAIN, 18));
+        textArea.setEditable(true);
+        textArea.setForeground(Color.BLUE);
+        textArea.setBackground(Color.WHITE);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        createMenus();
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(configMenu);
+        menuBar.add(fileMenu);
+        menuBar.add(preferencesMenu);
+        menuBar.add(templatesMenu);
+        frame.setJMenuBar(menuBar);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void createMenus() {
+        configMenu = new JMenu("Config");
+        JMenuItem configItem1 = new JMenuItem("Configuration Item 1");
+        JMenuItem configItem2 = new JMenuItem("Configuration Item 2");
+        configMenu.add(configItem1);
+        configMenu.add(configItem2);
+
+        fileMenu = new JMenu("File");
+        JMenuItem openFileItem = new JMenuItem("Open File");
+        JMenuItem saveFileItem = new JMenuItem("Save File");
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(e -> handleExit());
+        fileMenu.add(openFileItem);
+        fileMenu.add(saveFileItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        preferencesMenu = new JMenu("Preferences");
+        JMenuItem prefItem1 = new JMenuItem("Preference Item 1");
+        JMenuItem prefItem2 = new JMenuItem("Preference Item 2");
+        preferencesMenu.add(prefItem1);
+        preferencesMenu.add(prefItem2);
+
+        templatesMenu = new JMenu("Templates");
+        JMenuItem templateItem1 = new JMenuItem("Template Item 1");
+        JMenuItem templateItem2 = new JMenuItem("Template Item 2");
+        templatesMenu.add(templateItem1);
+        templatesMenu.add(templateItem2);
+    }
+
+     private void addText(String text) {
+        textArea.append(text + "\n");
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+    }
+
+    private void handleWindowClosing() {
+        int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Confirm Exit",
+                JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    private void handleExit() {
+        int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Confirm Exit",
+                JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    private void handleOpenFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int option = fileChooser.showOpenDialog(frame);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            readFile(selectedFile);
+        }
+    }
+
+    private void readFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            textArea.setText(content.toString());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Error reading file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void handleSaveFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int option = fileChooser.showSaveDialog(frame);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            saveFile(selectedFile);
+        }
+    }
+
+    private void saveFile(File file) {
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(textArea.getText());
+            JOptionPane.showMessageDialog(frame, "File saved successfully.", "Save File", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Error saving file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                 PyIDE pyIDE = new PyIDE();
+              pyIDE.start();
+            }
+        });
+    }
+}
