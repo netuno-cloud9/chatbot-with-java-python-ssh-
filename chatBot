@@ -41,7 +41,7 @@ public class ChatBot extends JFrame {
         + "2. Digite um comando na área de texto e pressione Enter para submetê-lo.<br><br>"
         + "3. Preste bastante atenção nas mensagens exibidas!<br><br>"
         + "4. Digite 'help' para obter ajuda sobre como começar e ver comandos úteis.<br><br>"
-        + "5. Digite 'py' para executar scripts em Python.<br><br>"
+        + "5. Digite 'jarPy' para executar scripts em Python.<br><br>"
         + "6. Digite 'exit' para encerrar a aplicação de forma segura.<br><br>"
         + "------------------------------------<br><br>"
         + "Aproveite o NetunoBot!"
@@ -55,7 +55,6 @@ public class ChatBot extends JFrame {
         super("NetunoBot");
         displayWelcomeMessage();
         initializeChatBot();
-
         setSize(600, 400);
         setResizable(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Change the default close operation
@@ -111,13 +110,13 @@ public class ChatBot extends JFrame {
                         handleJavaCommand();
                     } else if (quote.equalsIgnoreCase("nmap")) {
                         handleNmapCommand();
-                    } else if (quote.equalsIgnoreCase("dictionary")) {
+                    } else if (quote.equalsIgnoreCase("dicionario")) {
                         handleDictionaryCommand();
                     } else if (quote.equalsIgnoreCase("exit")) {
                         handleexitCommand();
                     } else if (quote.equalsIgnoreCase("help")) {
                         handleHelpCommand();
-                    } else if (quote.equalsIgnoreCase("toca do coelho")) {
+                    } else if (quote.equalsIgnoreCase("jarPy")) {
                         handlerabbitCommand();
                     } else {
                         processInput(quote);
@@ -142,43 +141,104 @@ public class ChatBot extends JFrame {
     
     
     private void handlerabbitCommand() {
-            RabbitCommandGame game = new RabbitCommandGame();
-        game.start();
+             PyIDE pyIDE = new PyIDE();
+              pyIDE.start();
     }
 
     private void handleLsCommand() {
-        addText("\n~$~\tThe 'ls' command lists files and directories in a UNIX-based system.");
+        addText("$~\tThe 'ls' command lists files and directories in a UNIX-based system.");
     }
 
     private void handlePythonCommand() {
-        addText("\n~$~\tPython is a popular programming language known for its simplicity and readability.");
+        addText("$\tPython is a popular programming language known for its simplicity and readability.");
     }
 
     private void handleJavaCommand() {
-        addText("\n~$~\tJava is a widely used programming language for building enterprise-level applications.");
+        addText("$~\tJava is a widely used programming language for building enterprise-level applications.");
     }
 
     private void handleNmapCommand() {
-        addText("\n~$~\tNmap is a powerful network scanning tool used for discovering hosts and services on a network.");
+        addText("$~\tNmap is a powerful network scanning tool used for discovering hosts and services on a network.");
     }
 
     private void handleDictionaryCommand() {
-        addText("\n~$~\tHere is a list of commands:\n");
-        addText("- ls: List files and directories in a UNIX-based system.\n");
-        addText("- python: Python programming language.\n");
-        addText("- java: Java programming language.\n");
-        addText("- nmap: Network scanning tool.\n");
+    String commands = "<html><body style='font-size:14px; font-family:Arial, sans-serif;'>"
+        + "<b>Lista de comandos:</b><br>"
+        + "- ls: Listar arquivos e diretórios em um sistema baseado em UNIX.<br>"
+        + "- python: Linguagem de programação Python.<br>"
+        + "- java: Linguagem de programação Java.<br>"
+        + "- nmap: Ferramenta de varredura de rede.<br>"
+        + "- grep: Pesquisar um padrão em um arquivo ou saída.<br>"
+        + "- cd: Navegar para um diretório específico.<br>"
+        + "- mkdir: Criar um diretório.<br>"
+        + "- rm: Remover um arquivo ou diretório.<br>"
+        + "- cp: Copiar arquivos e diretórios.<br>"
+        + "- mv: Mover ou renomear arquivos e diretórios.<br>"
+        + "- chmod: Alterar as permissões de um arquivo ou diretório.<br>"
+        + "- cat: Exibir o conteúdo de um arquivo.<br>"
+        + "- echo: Exibir uma mensagem na saída padrão.<br>"
+        + "- date: Exibir a data e hora atual.<br>"
+        + "- pwd: Exibir o diretório atual.<br>"
+        + "- find: Localizar arquivos ou diretórios.<br>"
+        + "- tar: Compactar e descompactar arquivos.<br>"
+        + "- ssh: Conectar a um servidor remoto usando SSH.<br>"
+        + "- scp: Copiar arquivos entre hosts remotos.<br>"
+        + "- wget: Baixar arquivos da web.<br>"
+        + "- curl: Fazer requisições HTTP.<br>"
+        + "- sed: Manipular e transformar textos.<br>"
+        + "- awk: Processar e filtrar dados em formato tabular.<br>"
+        + "- git: Sistema de controle de versão distribuído.<br>"
+        + "- svn: Sistema de controle de versão centralizado.<br>"
+        + "- ping: Verificar a conectividade com um host.<br>"
+        + "- ifconfig: Exibir e configurar interfaces de rede.<br>"
+        + "- netstat: Exibir informações sobre conexões de rede.<br>"
+        + "- chmod: Alterar as permissões de um arquivo ou diretório.<br>"
+        + "- chown: Alterar o proprietário de um arquivo ou diretório.<br>"
+        + "- chgrp: Alterar o grupo de um arquivo ou diretório.<br>"
+        + "- top: Exibir processos em execução e uso de recursos.<br>"
+        + "- ps: Exibir informações sobre processos.<br>"
+        + "- kill: Encerrar um processo.<br>"
+        + "- man: Exibir o manual de um comando.<br>"
+        + "- history: Exibir o histórico de comandos executados.<br>"
+        + "- du: Exibir o espaço em disco utilizado por arquivos e diretórios.<br>"
+        + "- df: Exibir informações sobre uso de espaço em disco.<br>"
+        + "- mount: Montar um sistema de arquivos.<br>"
+        + "- umount: Desmontar um sistema de arquivos.<br>"
+        + "- grep: Pesquisar um padrão em um arquivo ou saída.<br>"
+        + "- awk: Processar e filtrar dados em formato tabular";
+
         // Add more commands and their explanations here
     }
 
-    private void handleHelpCommand() {
-        addText("\n$\tHere are some keywords you can use:\n");
-        addText("- ls\n");
-        addText("- python\n");
-        addText("- java\n");
-        addText("- nmap\n");
-        // Add more keywords here
-    }
+private void handleHelpCommand() {
+    addText("\n$\tHere are some keywords you can use:\n");
+    addText("- ls\n");
+    addText("- python\n");
+    addText("- java\n");
+    addText("- nmap\n");
+    addText("- grep\n");
+    addText("- chmod\n");
+    addText("- ssh\n");
+    addText("- tar\n");
+    addText("- curl\n");
+    addText("- awk\n");
+    addText("- sed\n");
+    addText("- find\n");
+    addText("- ssh-keygen\n");
+    addText("- openssl\n");
+    addText("- openssl genrsa\n");
+    addText("- openssl req\n");
+    addText("- openssl x509\n");
+    addText("- openssl s_client\n");
+    addText("- openssl s_server\n");
+    addText("- openssl enc\n");
+    addText("- nmap -p\n");
+    addText("- nmap -sV\n");
+    addText("- nmap -A\n");
+    addText("- nmap -O\n");
+    addText("- nmap --script\n");
+    // Add more keywords here
+}
 
     private void processInput(String quote) {
         quote = quote.toLowerCase().replaceAll("[!?.]+$", "");
@@ -225,6 +285,16 @@ public class ChatBot extends JFrame {
         chatBot.put("nmap|Wireshark|Metasploit|Burp Suite|Snort|Aircrack-ng", new String[]{"Security tools like nmap, Wireshark, and Metasploit are essential for assessing and securing computer systems."});
         chatBot.put("yes", new String[]{"no", "NO", "NO!!!!!!!"});
         chatBot.put("default", new String[]{"Desculpe querido, não entendi", "Tente novamente", "noob", "é sério isso?", "(indisponível para você)"});
+        chatBot.put("what is your name", new String[]{"My name is ChatBot.", "I am ChatBot, nice to meet you!"});
+        chatBot.put("tell me a joke", new String[]{"Why don't scientists trust atoms?", "Because they make up everything!"});
+        chatBot.put("how old are you", new String[]{"I am an AI, so I don't have an age.", "I exist outside the concept of time."});
+        chatBot.put("what is the meaning of life", new String[]{"The meaning of life is subjective and can vary for each individual.", "The meaning of life is a profound question that philosophers have pondered for centuries."});
+        chatBot.put("where are you from", new String[]{"I am a virtual assistant and don't have a physical location.", "I exist in the digital realm."});
+        chatBot.put("tell me about yourself", new String[]{"I am an AI-powered chatbot designed to assist and provide information.", "I'm here to help answer your questions and engage in conversation."});
+        chatBot.put("do you have any siblings", new String[]{"As an AI, I don't have a family or siblings.", "I am a standalone entity."});
+        chatBot.put("what are your hobbies", new String[]{"I don't have hobbies as I am an AI.", "My purpose is to assist and provide information."});
+        chatBot.put("can you recommend a book", new String[]{"It depends on your interests. What genre or topic are you interested in?"});
+        chatBot.put("what is the capital of France", new String[]{"The capital of France is Paris.", "Paris is the capital city of France."});
     }
 
     private String getPhilosophicalQuote() {
