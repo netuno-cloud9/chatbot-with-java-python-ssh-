@@ -1,4 +1,4 @@
-SafeJar é  aplicação Java desenvolvida utilizando o Apache NetBeans e o Maven. Ela utiliza o framework Swing para fornecer uma interface gráfica amigável ao usuário. O objetivo desta aplicação é estimular o aprendizado e demonstrar o uso e as capacidades do JDK 20.
+SafeJar é  aplicação Java em desenvolvimento utilizando o Apache NetBeans e o Maven. Ela utiliza o framework Swing para fornecer uma interface gráfica amigável ao usuário. O objetivo desta aplicação é estimular o aprendizado e demonstrar o uso e as capacidades do JDK 20.
 
 Recursos
 Interface Gráfica do Usuário (GUI) construída com Swing.
@@ -26,17 +26,13 @@ Sobre: Veja informações sobre o aplicativo JDK 20 e seus desenvolvedores.
 Relatório: Gere um relatório de teste de velocidade executando código Python para medir velocidade de download, velocidade de upload e tempo de ping.
 Configurações: Personalize a aparência do aplicativo selecionando cores para a tela interna e o texto.
 
-Contribuição
-Aceitamos contribuições para o projeto JDK 20. Se você encontrar algum problema ou tiver sugestões de melhorias, abra uma issue ou envie um pull request no repositório do projeto.
-
-
 Agradecimentos
 Gostaríamos de expressar nossa gratidão aos desenvolvedores e colaboradores do Apache NetBeans IDE, Maven, Swing e Java Development Kit por fornecerem as ferramentas e frameworks que tornaram esta aplicação possível.
 __________________________________________________________________________________________________________________________________________________________________
 
 
 Overview
-SafeJar is a Java application developed using Apache NetBeans and Maven. It utilizes the Swing framework to provide a user-friendly graphical interface. The purpose of this application is stimulate learning and  demonstrate the usage and capabilities of JDK 20.
+SafeJar is a Java application under developement using Apache NetBeans and Maven. It utilizes the Swing framework to provide a user-friendly graphical interface. The purpose of this application is stimulate learning and  demonstrate the usage and capabilities of JDK 20.
 
 Features
 Graphical User Interface (GUI) built with Swing.
@@ -63,10 +59,6 @@ NetunoBot: Open the NetunoBot, a chatbot interface within the JDK 20 application
 About Me: View information about the JDK 20 application and its developers.
 Relatório: Generate a speed test report by executing Python code to measure download speed, upload speed, and ping time.
 Configurações: Customize the application's appearance by selecting colors for the inner screen and text.
-
-Contributing
-We welcome contributions to the JDK 20 project. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's repository.
-
 
 Acknowledgments
 We would like to express our gratitude to the developers and contributors of the Apache NetBeans IDE, Maven, Swing, and the Java Development Kit for providing the tools and frameworks that made this application possible.
